@@ -24,25 +24,21 @@ def message():
 
     print(data)
 
-    if data["entry"]:
+    if data.get("entry"):
         for entry in data["entry"]:
-            if entry["messaging"]:
-                for messaging in entry["messaging"]:
-                    if messaging["sender"]["id"]:
-                        user = (messaging["sender"]["id"])
-                        if messaging["message"]:
-                            mes = messaging["message"]
+            if entry.get("messaging"):
+                for message in entry["messaging"]:
+                    if message.get('message'):
+                        # Facebook Messenger ID for user so we know where to send response back to
+                        user = message['sender']['id']
+                        if message['message'].get('text'):
+                            text = message['message']['text'] + " by bot"
+                            bot.send_text_message(user, text)
 
-                            # text
-                            if mes["text"] in mes:
-                                text = dict(mes["text"])
-                                bot.send_text_message(user, text)
+                        if message['message'].get('attachments'):
+                                for attachment in message['message']['attachments']:
+                                    link = attachment['payload']['url']
+                                    bot.send_image_url(user, link)
 
-                            # attachments
-                            # if mes['attachments'] in mes:
-                            #     # for attachment in mes['attachments']:
-                            #     #     link = attachment['payload']['url']
-                            #     #     bot.send_image_url(user, link)
 
     return "Message recieved"
-y
